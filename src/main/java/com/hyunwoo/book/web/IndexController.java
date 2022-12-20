@@ -1,5 +1,6 @@
 package com.hyunwoo.book.web;
 
+import com.hyunwoo.book.config.auth.LoginUser;
 import com.hyunwoo.book.config.auth.dto.SessionUser;
 import com.hyunwoo.book.service.posts.PostsService;
 import com.hyunwoo.book.web.dto.PostsResponseDto;
@@ -8,20 +9,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import javax.servlet.http.HttpSession;
 
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
 
     private final PostsService postsService;
-    private final HttpSession httpSession;
 
     /*# 전체 페이지 목록*/
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
 
         if(user != null) {
             model.addAttribute("userName", user.getName());
@@ -33,6 +31,7 @@ public class IndexController {
     /*# 글 등록*/
     @GetMapping("/posts/save")
     public String postsSave() {
+
         return "posts-save";
     }
 
